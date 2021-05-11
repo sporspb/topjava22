@@ -1,29 +1,6 @@
 # Онлайн-проект <a href="https://github.com/JavaWebinar/topjava">Topjava</a>
 ## <a href="https://drive.google.com/drive/folders/0B9Ye2auQ_NsFfmctT3oyNW1qaVhDb2p0bGpyTFVlaUJ2VVpOdVgtWF9KTUFBMWFaR2xVYVE">Материалы занятия</a>
 
-### Дополнительно: ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) [Детали реализации](https://drive.google.com/open?id=0B9Ye2auQ_NsFVFVVUGctMUxxSkE)
-- <a href="http://stackoverflow.com/questions/8994864/how-would-i-specify-a-hibernate-pattern-annotation-using-a-regular-expression">Validate by RegExp</a>
-- <a href="http://www.objectdb.com/java/jpa/persistence/managed#Entity_Object_Life_Cycle">Working with JPA Entity Objects</a>
-- <a href="https://en.wikibooks.org/wiki/Java_Persistence/Relationships">Java Persistence/Relationships</a>
-- <a href="http://articles.javatalks.ru/articles/17">Использование ThreadLocal переменных</a>
-- <a href="http://stackoverflow.com/questions/1069992/jpa-entitymanager-why-use-persist-over-merge">Merge vs Persist</a>
-- <a href="http://www.youtube.com/watch?v=1KphwODu1gg">Видео: работа в ZK с OpenJPA (в чем Hibernate хуже)</a>
-- <a href="https://developer.jboss.org/wiki/OpenSessionInView">Паттерн "открытие транзакции в фильтре"</a> и <a href="http://stackoverflow.com/questions/1103363/why-is-hibernate-open-session-in-view-considered-a-bad-practice">почему это bad-practice</a>
-- <a href="https://en.wikibooks.org/wiki/Java_Persistence/Identity_and_Sequencing#Sequence_Strategies">Sequence Strategies</a>
-- <a href="http://stackoverflow.com/questions/9470442/why-is-the-hibernate-default-generator-for-postgresql-sequencegenerator-not?lq=1">SequenceGenerator/IdentityGenerator in PostgreSql</a>
-
-> `EntityManager` - это по сути прокси-обертка над Hibernate Session, которая создается каждый раз при открытии транзакции.
-
-- Дополнительно (ни разу не сталкивался): еще есть редкий случай ручного управления `@PersistenceContext(type = PersistenceContextType.EXTENDED)`, когда он используется в нескольких транзакциях (long-running session or session-per-conversation).
-  - <a href="https://techblog.bozho.net/spring-and-persistencecontexttype-extended/">Spring and PersistenceContextType.EXTENDED</a>
-  - <a href="http://stackoverflow.com/questions/2547817/what-is-the-difference-between-transaction-scoped-persistence-context-and-extend">Transaction-scoped vs Extended Persistence</a>
-
-### ![correction](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Правки в проекте
-#### Apply 5_0_fix.patch
-- Мелкие правки и переименования переменных/методов
-- Убрал `throws Exception` из тестов. IDEA по умолчанию перестала их добавлять.
-- В `MealServiceTest.updateNotOwn` добавил дополнительную проверку, что еда в тесте не модифицировалась. 
-
 ## ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 1. [Обзор JDK 9/11. Миграция Topjava с 1.8 на JDK 15](http://javaops.ru/view/resources/jdk8_11)
 ### Внимание: для JDK 15 обновите IDEA на последнюю версию и Tomcat на 9.x
 > - Проект обновил до JDK 15. Для запуска Maven или Tomcat переопредели переменную окружения `JAVA_HOME` и переменную `path`, чтобы  `java -version` тоже было 15. Напомню, что IDEA это java процесс. Чтобы новые переменные окружения в ней увиделись, требуется ее перегрузить.
@@ -67,7 +44,7 @@
 > - использовать entity в `Set` (рекомендовано для Many-ассоциаций) либо как ключи в `HashMap`
 > - использовать _reattachment of detached instances_ (т.е. манипулировать одним Entity в нескольких транзакциях/сессиях).
 
-> [Implementing equals() and hashCode()](https://access.redhat.com/documentation/en-us/jboss_enterprise_application_platform/4.3/html/hibernate_reference_guide/persistent_classes-implementing_equals_and_hashcode)
+> [Implementing equals() and hashCode()](https://docs.jboss.org/hibernate/stable/core.old/reference/en/html/persistent-classes-equalshashcode.html)
 
 > Оптимально использовать уникальные бизнес-поля, но обычно таких нет, и чаще всего используются PK с ограничением, что он может быть `null` у новых объектов, и нельзя объекты сравнивать через `equals() and hashCode()` в бизнес-логике (например, тестах).
 
@@ -88,6 +65,7 @@
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 4. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFZENCVEhDMkZiV00">Транзакции</a>
 -  <a href="https://ru.wikipedia.org/wiki/Транзакция_(информатика)">wiki Транзакция</a>
 -  <a href="https://jira.spring.io/browse/DATAJPA-601">readOnly и Propagation.SUPPORTS</a>
+-  [@Transactional In-Depth](https://www.marcobehler.com/guides/spring-transaction-management-transactional-in-depth)
 - Ресурсы:
   - [Транзакции в Spring Framework](https://medium.com/@kirill.sereda/%D1%82%D1%80%D0%B0%D0%BD%D0%B7%D0%B0%D0%BA%D1%86%D0%B8%D0%B8-%D0%B2-spring-framework-a7ec509df6d2)
   - <a href="https://dzone.com/articles/how-does-spring-transactional">How does Spring @Transactional Really Work</a>
@@ -98,6 +76,7 @@
 #### Apply 5_5_profiles_connection_pool.patch
 > - `SLF4JBridgeHandler` перенес в профиль `postgres` (если логировать драйвер не нужно, то и он не нужен) 
 > - **Галочка в XML-профиле влияет только на отображение в IDEA и никак не влияет на выполнение кода.**
+> - Перенес класс `Profiles` в сорсы тестов
 > - `Profiles.ACTIVE_DB` задает активный профиль базы (postgres/hsqldb)
 > - `Profiles.REPOSITORY_IMPLEMENTATION` определяет реализацию репозитория при запуске приложения (для тестов задаются через `@ActiveProfiles`).
 
@@ -117,7 +96,7 @@
 
 ### Автоматический выбор профиля базы: [`ActiveProfilesResolver`](http://stackoverflow.com/questions/23871255/spring-profiles-simple-example-of-activeprofilesresolver)
 #### Apply 5_6_profile_resolver.patch
-> Сделал автоматический выбор профиля базы при запуске приложения (тестов) в зависимости от присутствия драйвера базы в classpath (`Profiles.getActiveDbProfile()`)
+> Сделал автоматический выбор профиля базы при запуске приложения (тестов) в зависимости от присутствия драйвера базы в classpath (`Profiles.getActiveDbProfile`). `ActiveDbProfileResolver` сделал внутренним классом `Profiles` 
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 6. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFTWJOdHduOWtNcTA">Пул коннектов</a>
 ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) [Александр Колесников - JDBC Pools Battle](https://www.youtube.com/watch?v=J9GzE2qlNuM&feature=youtu.be&t=2895) (ссылка на выводы)
@@ -157,28 +136,13 @@
    -  <a href="https://blog.42.nl/articles/spring-data-jpa-with-querydsl-repositories-made-easy/">Spring Data JPA with QueryDSL</a>
    -  [SpEL support in Spring Data JPA @Query](https://spring.io/blog/2014/07/15/spel-support-in-spring-data-jpa-query-definitions)
 
-> ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Какой паттерн проектирования применён в классе DataJpaUserRepository (декоратор/адаптер/прокси/другой)?:
+## ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Ваши вопросы
+> Какой паттерн проектирования применён в классе DataJpaUserRepository (декоратор/адаптер/прокси/другой)?:
 
 Вопрос интересный:) Ближе всего к адаптеру, но скорее композиция с делегированием. Мы просто используем для нашей реализации возможности `data-jpa: CrudUserRepository`.
 Делегат интерфейсов не меняет, а прокси похож на делегата, но служит для неявной подмены (часто прямо в рантайм). См. [ПАТТЕРНЫ
 ПРОЕКТИРОВАНИЯ](https://refactoring.guru/ru/design-patterns)
 
-### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 8. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFajd2Y2RLQVVJWUU">Spring кэш</a>
-#### Apply 5_8_spring_cache.patch
-> - Сделал миграцию на [Ehcache 3.x, compatible with javax.cache API (JSR-107)](http://www.ehcache.org/)
->   - [Spring 4+ with Ehcache 3 – how to](https://imhoratiu.wordpress.com/2017/01/26/spring-4-with-ehcache-3-how-to/)
->   - [Новая XML конфигурация](http://www.ehcache.org/documentation/3.4/xml.html)
->   - [Supplement JSR-107’s configurations](http://www.ehcache.org/documentation/3.1/107.html#supplement-jsr-107-configurations)
-> - В `UserServiceTest.setUp` вместо вызова метода `UserService.evictCache` сделал очистку программно через `CacheManager`
->   - [Evict Ehcache elements programmatically, using Spring](https://stackoverflow.com/questions/29557959/evict-ehcache-elements-programmatically-using-spring)
-
--  <a href="http://habrahabr.ru/post/113945/">Кэширование в Spring Framework</a>
--  Дополнительно:
-   -  <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/integration.html#cache">Spring cache Abstraction</a>
-   -  <a href="http://habrahabr.ru/post/25140/">Распределённая система кэша ehcache</a>
-   -  Починка JUnit: <a href="http://stackoverflow.com/questions/10013288/another-unnamed-cachemanager-already-exists-in-the-same-vm-ehcache-2-5">один кэш на JVM</a>
-
-## ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Ваши вопросы
 > В <a href="https://github.com/spring-projects/spring-petclinic/tree/master/src/main/java/org/springframework/samples/petclinic">spring-petclinic</a> `DataJpa` реализована без дополнительных классов. В таком виде как у них, spring data смотрится, конечно, намного лаконичней других реализаций, но у нас получилось  вдвое больше кода, чем с тем же jpa или jdbc. Плюс только пожалуй в том, что query находятся прямо в репозитории, а  не где-то там в другом пакете. Так что получается, spring data лучше подходит для простейших crud без всяких "фишек"? или в чем его достоинство для больших и сложных проектов?
 
 Достоинства DATA-JPA по сравнению, например, с JPA: есть типизация, готовые реализации типовых методов CRUD, а также paging, data-common. Мы можем переключить реализацию JPA, например, на mongoDb (`PagingAndSortingRepository`, от которого наследуется `JpaRepository`, находится в `spring-data-common`).
@@ -193,6 +157,16 @@
 > А как делать транзакционность для реализации jdbc?
 
 Будем делать на следующем уроке.
+
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 8. [Spring кэш](https://drive.google.com/file/d/1xpuL2YscL1ounS_qFRb1qzLciEOKn9I4/view?usp=sharing)
+#### Apply 5_8_spring_cache.patch
+- [Wiki Кэш](https://ru.wikipedia.org/wiki/Кэш)
+  - [Spring Cache Abstraction](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache)
+  - [ECache](https://www.ehcache.org)
+  - [Configuring the Cache Storage](https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache-store-configuration)
+- [Spring 3.1 новый механизм кеширования](https://russianblogs.com/article/75981527090/)
+- [Spring 4+ with Ehcache 3 – how to](https://imhoratiu.wordpress.com/2017/01/26/spring-4-with-ehcache-3-how-to/)
+- [Evict Ehcache elements programmatically, using Spring](https://stackoverflow.com/questions/29557959/evict-ehcache-elements-programmatically-using-spring)
 
 --------------------
 
@@ -231,7 +205,7 @@
 Уметь пользоваться гугл для разработчика, это умение №1. Если застряли- попробуйте например слова: `spring context set profile`
 - 4: Если у метода нет реализации, то стандартно бросается `UnsupportedOperationException`. Для уменьшения количества кода при реализации _Optional_ (п. 7, только `DataJpa`) попробуйте сделать `default` метод в интерфейсе.
 - 5: В Data-Jpa метод для ссылки на entity (аналог `em.getReference`) - `T getOne(ID id)`
-- 6: Проверьте, что в `DataJpaMealRepository` все обращения к DB выполняются в **одной транзакции**.
+- 6: Проверьте, что в `DataJpaMealRepository` все обращения к DB для одной операции выполняются в **одной транзакции**.
 - 7: Для 7.1 `достать по id пользователя вместе с его едой` я в `User` добавил `List<Meal> meals`. Учесть, что у юзера может отсутствовать еда. [Ordering a join fetched collection in JPA using JPQL/HQL](http://stackoverflow.com/questions/5903774/ordering-a-join-fetched-collection-in-jpa-using-jpql-hql)
 - 8: Проверьте, что все тесты запускаются из Maven (имена классов тестов удовлетворяют соглашению) и итоги тестов класса выводятся корректно (не копятся). По умолчанию [maven-surefire-plugin](http://maven.apache.org/surefire/maven-surefire-plugin/examples/inclusion-exclusion.html) включает в тесты классы, заканчивающиеся на Test.
 - 9: Атрибуты `resolver` и `profiles` в одном `@ActiveProfiles` вместе не работают (см. `org.springframework.test.context.support.ActiveProfilesUtils#resolveActiveProfiles`).

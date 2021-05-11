@@ -5,8 +5,7 @@
 ### ![correction](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Правки в проекте
 
 #### Apply 4_0_fix.patch
-- Пофиксил сравнение в `UserServiceTest.get`
-- В `UserTestData.getUpdated` меняю все поля для более полного тестирования 
+> Фикс имени переменной и счетчика для возможных тестов 
 
 ## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Разбор домашнего задания HW3
 
@@ -19,7 +18,7 @@
 
 #### **Apply 4_1_HW3.patch**
 
-#### [Сравнение времени выполнения для разных индексов](meals_index.md)
+### [Сравнение времени выполнения для разных индексов](meals_index.md)
 - <a href="http://stackoverflow.com/questions/970562/postgres-and-indexes-on-foreign-keys-and-primary-keys">На id как на primary key индекс создается автоматически</a>
 - Все запросы в таблицу meals у нас идут с `user_id`
 - По полю `date_time` не только есть запросы, но и сортируем результат. То есть это поле - хороший кандидат для индексирования
@@ -33,9 +32,11 @@
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2. [HW03 Optional: Meals tests](https://drive.google.com/file/d/1RfO0Irz8ayw2ivnjffUol20BQrKpu-jg)
 
 #### **Apply 4_2_HW3_optional.patch**
+> Убрал `throws Exception` из тестов. IDEA по умолчанию перестала их добавлять.
+> В `MealServiceTest.updateNotOwn` добавил дополнительную проверку, что еда в тесте не модифицировалась.
 
 #### **Apply 4_3_tests_refactoring.patch**
-> - Переименовал статический метод генерации ([Блох Джошуа, "Java. Эффективное программирование."](http://javaops.ru/view/books)) на `usingFieldsComparator`.
+> - Переименовал статический метод генерации ([Блох Джошуа, "Java. Эффективное программирование."](http://javaops.ru/view/books)) на `usingIgnoringFieldsComparator`.
 
 #### **Apply 4_4_HW3_fix_logging.patch**
 - [Вызов статического метода из конфигурации спринга](https://stackoverflow.com/a/27296470/548473) 
@@ -44,12 +45,12 @@
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFU005ZzBNZmZnTVU">Методы улучшения качества кода</a>
 - Добавьте в своем `readme.md` сверху две строчки `Codacy Badge` и `Build Status`, по аналогии с моим [README.md](https://github.com/JavaWebinar/topjava/blob/master/README.md) ([Raw](https://raw.githubusercontent.com/JavaWebinar/topjava/master/README.md)). `Codacy Badge` берется с сайта `codacy -> Settings`
   - <a href="https://www.codacy.com">Codacy Check code</a> (проверка стиля и поиск багов в коде).
-     - добавил [Codacy configuration file](https://support.codacy.com/hc/en-us/articles/360005097654-Ignore-files-from-Codacy-analysis) для исключения из проверок содержимого `webapp` и `READ.me` (на нашем проекте он выдает на них кучу ошибок)
-     - после правок паттернов можно сделать [повторный анализ](https://support.codacy.com/hc/en-us/articles/213840489-How-do-I-reanalyze-my-project-). С результатами тормозит  
-  - <a href="https://travis-ci.org/">Сборку и тесты Travis</a> (результат выполнения тестов проекта)
-     - [Что такое travis-ci.org](https://habr.com/post/140344/)
-     - [Travis CI Tutorial](https://dzone.com/articles/travis-ci-tutorial-java-projects)
-     - <a href="https://docs.travis-ci.com/user/languages/java/">Сборка Java проекта</a>
+    - добавил [Codacy configuration file](https://support.codacy.com/hc/en-us/articles/360005097654-Ignore-files-from-Codacy-analysis) для исключения из проверок содержимого `webapp` и `READ.me` (на нашем проекте он выдает на них кучу ошибок)
+    - после правок паттернов можно сделать [повторный анализ](https://support.codacy.com/hc/en-us/articles/213840489-How-do-I-reanalyze-my-project-). С результатами тормозит  
+  - <a href="https://travis-ci.com/">Сборку и тесты Travis</a> (результат выполнения тестов проекта)
+    - [Что такое travis-ci](https://habr.com/post/140344/)
+    - [Travis CI Tutorial](https://dzone.com/articles/travis-ci-tutorial-java-projects)
+    - <a href="https://docs.travis-ci.com/user/languages/java/">Сборка Java проекта</a>
   - Сервис по проверке `maven` зависимостей VersionEye [закрыли](https://blog.versioneye.com/2017/10/26/the-start-of-a-new-journey). Ищу замену...
 #### Сделайте `push` для отображения результатов текущего состояния проекта.
 
@@ -75,6 +76,8 @@
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 6. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFVWZYcHoyUF9qX2M">ORM. Hibernate. JPA.</a>
 <a href="https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model">Entity</a>- класс (объект Java), который в ORM маппится в таблицу DB.
 
+[EntityManager](https://jsehelper.blogspot.com/2016/04/java-persistence-api-jpa-2.html) - это по сути прокси-обертка над Hibernate Session, которая создается каждый раз при открытии транзакции.
+
 > - ВНИМАНИЕ: патч меняет `postgres.properties`, в котором у вас, возможно, свои креденшелы к базе
 > - `hibernate-core` с 5.2.x включает `hibernate-entitymanager` и `hibernate-java8`, то есть конверторы Time API уже не нужны
 >    -  <a href="http://stackoverflow.com/questions/23718383/jpa-support-for-java-8-new-date-and-time-api">JPA support for Java 8 new date and time API</a>
@@ -83,15 +86,17 @@
 > - [EL implementation provided by the container. In a Java SE you have to add an implementation as dependency to your POM file](http://hibernate.org/validator/documentation/getting-started/#unified-expression-language-el): добавил `javax.el` зависимость со `scope=provided`
 
 #### **Apply 4_8_add_jpa.patch**
-> - **Внимание: при [настройке JPA в IDEA](https://github.com/JavaOPs/topjava/wiki/IDEA#%D0%94%D0%BE%D0%B1%D0%B0%D0%B2%D0%B8%D1%82%D1%8C-jpa) ПРОВЕРЬТЕ, что у вас не подтянулись Java EE 6 libraries. Все зависимости в проект попадают только через Maven. Перед настройкой сначала подтяните его зависимости**
+> - **[Настройка JPA в IDEA](https://github.com/JavaOPs/topjava/wiki/IDEA#jpa).   
+ПРОВЕРЬТЕ, что у вас не подтянулись Java EE 6 libraries, все зависимости в проект попадают только через Maven. Перед настройкой сначала подтяните его зависимости**
 > - Тесты и приложение ломаются. `MealServiceTest` починится после выполнения HW04 (`JpaMealRepository`)
 > - Если вы используете Java 9 и выше, то возникают проблемы с `JAXBException` (пакет `java.xml.bind`). [См. решение](https://www.concretepage.com/forum/thread?qid=531)
+> - Обратите внимание на пакет с аннотациями валидации: в новой версии `javax` поменялся на `jakarta`
 - Дополнительно:
-    -  <a href="http://ru.wikipedia.org/wiki/ORM">ORM</a>
-    -  <a href="http://habrahabr.ru/post/265061/">JPA и Hibernate в вопросах и ответах</a>
-    - [Hibernate — о чем молчат туториалы](https://habr.com/ru/post/416851/)
-    - [Наследование в Hibernate: выбор стратегии](https://habrahabr.ru/post/337488/)
-    - <a href="https://easyjava.ru/data/jpa/jpa-entitymanager-upravlyaem-sushhnostyami/">JPA EntityManager: управляем сущностями</a>
+  -  <a href="http://ru.wikipedia.org/wiki/ORM">ORM</a>
+  -  <a href="http://habrahabr.ru/post/265061/">JPA и Hibernate в вопросах и ответах</a>
+  - [Hibernate — о чем молчат туториалы](https://habr.com/ru/post/416851/)
+  - [Наследование в Hibernate: выбор стратегии](https://habrahabr.ru/post/337488/)
+  - <a href="https://easyjava.ru/data/jpa/jpa-entitymanager-upravlyaem-sushhnostyami/">JPA EntityManager: управляем сущностями</a>
     - [Field vs property access](http://stackoverflow.com/a/6084701/548473)
     - <a href="http://www.quizful.net/post/Hibernate-3-introduction-and-writing-hello-world-application">Hibernate: введение и написания Hello world приложения</a>
     - [15 reasons why we need to choose Hibernate over JDBC](https://habiletechnologies.com/blog/reasons-to-choose-hibernate-over-jdbc)
@@ -196,6 +201,11 @@ Hibernate (как любая ORM) реализует мапинг таблиц �
 > Почему в проекте транзакционность сделана в слое репозитория, а не сервиса? Транзакциями удобнее пользоваться на слое сервисов, так как здесь  реализуется бизнес логика и бывает нужно делать несколько операций в одной транзакции.
 
 С классической точки зрения все транзакции действительно объявляются на уровне сервиса. Мы будем использовать в логике сервиса несколько запросов и тогда сделаем дополнительную транзакцию на методе сервисе. Новая транзакция при этом не создается (по умолчанию используется `Propagation.REQUIRED`, который поддерживают существующую), поэтому несколько `@Transactional` аннотаций ведут себя как одна. Я использую подход `spring-data-jpa` (будет на следующем занятии): в репозитории транзакции объявлять удобно, тк не надо думать о них в сервисах.
+
+#### **Apply 4_11_fix_validation.patch**
+
+При создании/обновлении User с пустыми полями проверки `@NotBlank` от `jakarta` не работают. Вернул `javax (hibernate-validator 6.x)`. 
+Примените патч и после него не забудьте сделать `mvn clean` и `Reload All Maven Projects`
 
 --------------------
 

@@ -5,8 +5,8 @@
 ### ![correction](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Правки в проекте
 
 #### Apply 6_0_fix.patch
-- замена deprecated метода
-- рефакторинг `Profiles`
+- Перенес `Profiles` в код проекта, `ActiveDbProfileResolver` оставил в тестах 
+- Небольшие правки
 
 ## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Разбор домашнего задания HW5
 
@@ -47,7 +47,7 @@
 #### Apply 6_07_HW5_graph_batch_size.patch
 - **<a href="http://stackoverflow.com/questions/97197/what-is-the-n1-selects-issue">N+1 selects issue</a>**
 - <a href="https://docs.oracle.com/javaee/7/tutorial/persistence-entitygraphs002.htm">Using Named Entity Graphs</a>
-  - [JPA ENTITY GRAPHS](http://www.radcortez.com/jpa-entity-graphs/)
+  - [Entity Graph в Spring Data JPA](https://sysout.ru/entity-graph-v-spring-data-jpa/)
   - [`EntityGraphType.FETCH` vs `LOAD`](http://stackoverflow.com/questions/31978011/what-is-the-diffenece-between-fetch-and-load-for-entity-graph-of-jpa)
 - <a href="https://dou.ua/lenta/articles/jpa-fetch-types/">Стратегии загрузки коллекций в JPA</a>
 - <a href="https://dou.ua/lenta/articles/hibernate-fetch-types/">Стратегии загрузки коллекций в Hibernate</a>
@@ -62,9 +62,10 @@ C `@BatchSize(size = 200)` делается запрос на юзеров (1), 
 
  > ![](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Откуда у нас берется `ConstraintViolationException` в тестах на валидацию? Для каких наших исключений он является рутом?
  
- Прежде всего - пользуйтесь дебагом! Исключение легко увидеть в методе `getRootCause()`. Если подебажить выполение Hibernate валидации, то можно найти, где обрабатываются аннотации валидации и место в `org.hibernate.cfg.beanvalidation.BeanValidationEventListener.validate()`, где бросается `ConstraintViolationException`.
+ Прежде всего - пользуйтесь дебагом! Исключение легко увидеть в методе `getRootCause()`. Если подебажить выполение Hibernate валидации, то можно найти, где обрабатываются аннотации валидации и место в `org.hibernate.cfg.beanvalidation.BeanValidationEventListener.validate()`, где бросается `ConstraintViolationException`.  
+Cамое простое - поставить брекпойнт в конструкторах `ConstraintViolationException` или в `ValidationException` и запустить тест `createWithException` в дебаге.
 
-#### Apply 6_08_add_test_validation.patch
+#### Apply [6_08_add_test_validation.patch](https://drive.google.com/file/d/1DuM1i2WehewEQn6Bi5jOC88FQR6tYqWU) - обновился 11.03 в 17.26
 **Тесты валидации для Jdbc не работают, нужно будет починить в HW6 (в реализация Jdbc валидация отсутствует)**
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFeTV0SUFfblk5NE0">Кэш Hibernate</a>
@@ -94,6 +95,7 @@ C `@BatchSize(size = 200)` делается запрос на юзеров (1), 
 - <a href="http://stackoverflow.com/questions/836569">CascadeType meaning</a>
 - <a href="https://en.wikibooks.org/wiki/Java_Persistence/ElementCollection">No cascade option on an ElementCollection, the target objects are always persisted, merged, removed with their parent.</a>
 - <a href="http://stackoverflow.com/questions/21149660">Create ON DELETE CASCADE: `@OnDelete`</a>
+- [Сascade for `@ElementCollection`](https://stackoverflow.com/a/62848296/548473)
 - <a href="http://stackoverflow.com/questions/3087040">Hibernate second level cache and ON DELETE CASCADE in database schema</a>
 - [`orphanRemoval=true` vs `CascadeType.REMOVE`](http://stackoverflow.com/a/19645397/548473)
 - [JPA `cascade/orphanRemoval` doesn't work with `NamedQuery`](http://stackoverflow.com/questions/7825484/jpa-delete-where-does-not-delete-children-and-throws-an-exception)
@@ -132,7 +134,7 @@ C `@BatchSize(size = 200)` делается запрос на юзеров (1), 
 При запуске Tomcat из IDEA запускается Tomcat, путь к которому мы прописали в конфигурации запуска (со своими настройками). 
 
 #### Apply 6_13_tomcat_pool_jndi_cargo.patch
-> - для запуска в Tomcat 9 поменял `tomcat7-maven-plugin` на `cargo-maven2-plugin`.
+> - для запуска в Tomcat 9 поменял `tomcat7-maven-plugin` на `cargo-maven3-plugin`.
 > - в `pom.xml` вместо `context.xml.default` можно делать [индивидуальный контекст приложения](https://stackoverflow.com/a/60797999/548473) 
 > - плагин сконфигурирован под postgres. Для HSQLDB нужно скорректировать `driverClassName` + `validationQuery="SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS` в `context.xml` и `dependencies`.
 
@@ -142,17 +144,17 @@ C `@BatchSize(size = 200)` делается запрос на юзеров (1), 
 
  > ![](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Для чего мы делаем профиль `tomcat`? Возможно два варианта запуска приложения: либо cargo, либо tomcat? И если мы запускаем через tomcat то в `spring-db.xml` через `jee:jndi-lookup` подтягивается конфигурация tomcata из `\src\main\resources\tomcat\context.xml`?
   
-1. Есть `cargo-maven2-plugin` который автоматически запускает Tomcat и деплоит туда наше приложение. Те это тоже деплой в Tomcat, но через Maven.
+1. Есть `cargo-maven3-plugin` который автоматически запускает Tomcat и деплоит туда наше приложение. Те это тоже деплой в Tomcat, но через Maven.
 2. В xml конфигурации Tomcat можно настраивать ресурсы (кроме пула коннектов к БД могут быть, например, JMS или настройки Mail). Это никак не связано с `cargo` плагином. В Spring этот сконфигурированный ресурс контейнера сервлетов подлючается через `jee:jndi-lookup`. Тк у нас несколько вариантов конфигурирования `DataSource`, мы этот вариант сделали в `spring-db.xml` в профиле `tomcat`.
 3. Плагин cargo позволяет задавать xml конфигурацию запускаемого Tomcat (у нас `src/main/resources/tomcat/context.xml`). И в параметрах запуска мы задаем активные профили Spring `tomcat,datajpa` через `spring.profiles.active`. Таким образом мы в плагине конфигурируем Tomcat, деплоим в него приложение и задаем приложению активные профили Spring для `DataSource` из конфигурации Tomcat.
   
-Плагин запускается после сборки проекта. Запуск из командной строки:
+Плагин запускается **после сборки проекта**. Запуск из командной строки:
 
-     mvn clean package -DskipTests=true org.codehaus.cargo:cargo-maven2-plugin:1.8.2:run
+     mvn clean package -DskipTests=true org.codehaus.cargo:cargo-maven3-plugin:1.9.2:run
 
 Приложение деплоится в application context topjava: [http://localhost:8080/topjava](http://localhost:8080/topjava)
 
-- <a href="https://codehaus-cargo.github.io/cargo/Maven2+plugin.html">Cargo Maven2 plugin</a>
+- <a href="https://codehaus-cargo.github.io/cargo/Maven+3+Plugin.html">Cargo Maven3 plugin</a>
 - <a href="http://stackoverflow.com/questions/4305935/is-it-possible-to-supply-tomcat6s-context-xml-file-via-the-maven-cargo-plugin#4417945">Кастомизация context.xml в cargo-maven2-plugin</a>
 - <a href="https://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html"/>Tomcat JNDI Resources</a>
 - <a href="https://commons.apache.org/proper/commons-dbcp/configuration.html">BasicDataSource Configuration</a>
@@ -172,12 +174,12 @@ C `@BatchSize(size = 200)` делается запрос на юзеров (1), 
 -  HandlerMapping: <a href="http://www.mkyong.com/spring-mvc/spring-mvc-simpleurlhandlermapping-example/">SimpleUrlHandlerMapping</a>, <a href="http://www.mkyong.com/spring-mvc/spring-mvc-beannameurlhandlermapping-example/">BeanNameUrlHandlerMapping</a>
 -  <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-caching-static-resources">Маппинг ресурсов.</a>
 -  Ресурсы:
-   -  <a href="http://www.mkyong.com/spring-mvc/spring-mvc-hello-world-example/">Spring MVC hello world</a>
-   -  <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-servlet-special-bean-types">Special bean types in the WebApplicationContext</a>
+  -  <a href="http://www.mkyong.com/spring-mvc/spring-mvc-hello-world-example/">Spring MVC hello world</a>
+  -  <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-servlet-special-bean-types">Special bean types in the WebApplicationContext</a>
 
 > Настройки `Project Structure->Modules->Spring`:
 
-![image](https://cloud.githubusercontent.com/assets/13649199/22221277/52c03cb4-e1c3-11e6-9039-08787e31a505.png)
+![image](https://user-images.githubusercontent.com/11200258/112018359-8aa1eb80-8b3f-11eb-942f-a8eb7938de41.png)
 
 > ![](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) В `web.xml` мы инициализируем `DispatcherServlet`, передавая ему параметром `spring-mvc.xml`. Получается, что `DispatcherServlet` парсит `spring-mvc.xml` и находит в нем context?
 
@@ -221,11 +223,6 @@ Hibernate supports following open-source cache implementations out-of-the-box: E
 
 См. видео урока "Динамическое изменение профиля при запуске". В плагине мы задаем параметры JVM запуска Tomcat
 
-> Почему мы не используем элемент `<context:annotation-config/>` в `spring-db.xml`?
-
-В проекте у нас сейчас 2 Spring контекста: `spring-mvc.xml (см. web.xml, DispatcherServlet)` и родительский `spring-app.xml + spring-db.xml (web.xml, contextConfigLocation)`.
-Грубо: 2 мапы, причем для mvc доступно все, что есть в родителе. Т.е. `spring-db.xml` не является отдельным самостоятельным контекстом, и достаточно того, что `<context:annotation-config/>` у нас есть в `spring-app.xml`.
-
 > A `@NamedQuery` или `@Query` подвержены кэшу запросов? Т.е. если мы поставим _USE_QUERY_CACHE_value_="true", будет ли Hibernate их кэшировать?
 
 Чтобы запрос кэшировался, кроме true в конфигурации [нужно еще явно выставить запросу _setCacheable_](http://vladmihalcea.com/2015/06/08/how-does-hibernate-query-cache-work/).    
@@ -235,13 +232,13 @@ Hibernate supports following open-source cache implementations out-of-the-box: E
 
 1. messages нам нужны в runtime (при работе приложения). Проект к собранному и задеплоенному в Tomcat war отношения никакого уже не имеет и на этом сервере он обычно не находится. Если ресурсы нужны только при сборке и тестировании, то путь к корню для одномодульного maven проекта можно задать как `${project.basedir}`, но для многомодульного проекта (а все реальные проекты многомодульные) это путь к корню своего модуля.
 2. В "реальном приложении" делается совершенно по-разному:
-   - нести с собой в classpath, но ресурсы нельзя будет динамически (без передеплоя) обновлять
-   - класть в war (не в classpath) и обновлять в развернутом TOMCAT_HOME/webapps/[appname]/...
-   - класть в зафиксированное определенное место (например, в home: `~` или в путь от корня `/app/config`). Можно задавать фиксированный пусть в пропертях профиля maven и фильтровать ресурсы (maven resources), чтобы они попали в проперти проекта.
-   - делать через переменную окружения, как у нас
-   - задавать в параметрах запуска JVM как системную переменную через -D..
-   - располагать в преференсах (для unix это home, для windows - registry): <a href="http://java-course.ru/articles/preferences-api/">использование Preferences API</a>
-   - держать настройки в DB
+  - нести с собой в classpath, но ресурсы нельзя будет динамически (без передеплоя) обновлять
+  - класть в war (не в classpath) и обновлять в развернутом TOMCAT_HOME/webapps/[appname]/...
+  - класть в зафиксированное определенное место (например, в home: `~` или в путь от корня `/app/config`). Можно задавать фиксированный пусть в пропертях профиля maven и фильтровать ресурсы (maven resources), чтобы они попали в проперти проекта.
+  - делать через переменную окружения, как у нас
+  - задавать в параметрах запуска JVM как системную переменную через -D..
+  - располагать в преференсах (для unix это home, для windows - registry): <a href="http://java-course.ru/articles/preferences-api/">использование Preferences API</a>
+  - держать настройки в DB
 
    Часто в одном приложении используют несколько способов для разных видов конфигураций.
 
@@ -261,13 +258,13 @@ Hibernate supports following open-source cache implementations out-of-the-box: E
 ---------------------------
 
 ## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Домашнее задание HW06
-- 1.1 Починить тесты `InMemoryAdminRestControllerSpringTest/InMemoryAdminRestControllerTest`  (добавлять `spring-mvc.xml` в контекст не стоит, т.к. в новой версии Spring для этого требуется `WebApplicationContext`. Можно просто поправить `inmemory.xml`)
+- 1.1 Починить тесты `InMemoryAdminRestControllerSpringTest/InMemoryAdminRestControllerTest`  (добавлять `spring-mvc.xml` в контекст не стоит, т.к. в новой версии Spring для этого требуется `WebApplicationContext`. Можно просто поправить `inmemory.xml`) + перевести `SpringMain` тоже на реализацию `inmemory`.
 - 1.2 Починить тесты Jdbc (исключить валидацию в тестах Jdbc)
   - <a href="http://iliachemodanov.ru/ru/blog-ru/12-tools/57-junit-ignore-test-by-condition-ru">org.junit.Assume</a>
-  - <a href="http://www.ekiras.com/2015/09/spring-how-to-get-current-profiles-in-spring-application.html">How to get Current Profiles in Spring Application</a>
+  - <a href="https://ekiras.blogspot.com/2015/09/spring-how-to-get-current-profiles-in-spring-application.html">How to get Current Profiles in Spring Application</a>
 - 1.3 Перенести функциональность `MealServlet` в `JspMealController` контроллер (по аналогии с `RootController`).
 `MealRestController` у нас останется, с ним будем работать позже. 
-  - 1.3.1 разнести запросы на update/delete/.. по разным методам (попробуйте вообще без `action=`). Можно по аналогии с `RootController#setUser` принимать `HttpServletRequest request` (аннотации на параметры и адаптеры для `LocalDate/Time` мы введем позже). 
+  - 1.3.1 разнести запросы на update/delete/.. по разным методам (попробуйте вообще без параметра `action=`). Можно по аналогии с `RootController#setUser` принимать `HttpServletRequest request` (аннотации на параметры и адаптеры для `LocalDate/Time` мы введем позже). 
   - 1.3.2 в одном контроллере нельзя использовать другой. Чтобы не дублировать код, можно сделать наследование контроллеров от абстрактного класса.
   - 1.3.3 добавить локализацию и `jsp:include` в `mealForm.jsp / meals.jsp`
 
@@ -283,7 +280,7 @@ Hibernate supports following open-source cache implementations out-of-the-box: E
    - [Валидация данных при помощи Bean Validation API](https://alexkosarev.name/2018/07/30/bean-validation-api/) 
 
 ### Optional 2 (повышенной сложности)
-- 3 Отключить кэш в тестах через `NoOpCacheManager` и для кэша Hibernate 2-го уровня `hibernate.cache.use_second_level_cache=false`. 
+- 3 Отключить Spring кэш в `UserService` в тестах через `NoOpCacheManager` и для кэша Hibernate 2-го уровня `hibernate.cache.use_second_level_cache=false`. 
   - [JPA 2.0 disable session cache for unit tests](https://stackoverflow.com/a/58963737/548473)
   - [Example of PropertyOverrideConfigurer](https://www.concretepage.com/spring/example_propertyoverrideconfigurer_spring)
   - [Spring util schema](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#xsd-schemas-util)      

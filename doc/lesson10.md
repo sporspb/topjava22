@@ -55,7 +55,7 @@ Datatables перевели на ajax (`"ajax": {"url": ajaxUrl, ..`), те пр
 - [jQuery: типы данных](https://jquery-docs.ru/jQuery.ajax/#data-types)
 - [jQuery: конверторы](https://jquery-docs.ru/jQuery.ajax/#using-converters)
 
-> В конвертере добавил дополнительную проверку `typeof json === 'object'`, т.к. [при ексепшене не переопределяется `jqXHR.responseJSON`](https://stackoverflow.com/questions/48229776/548473)
+> В конвертере добавил дополнительную проверки `typeof json === 'object'` и `hasOwnProperty('dateTime')`, т.к. [при ексепшене не переопределяется `jqXHR.responseJSON`](https://stackoverflow.com/questions/48229776/548473)
 
 #### Apply 10_05_persist_validate_group.patch
 - [Default Hibernate validation](https://stackoverflow.com/a/16930663/548473). Т.к.  `Persist` наследуется от `javax.validation.groups.Default`, при сохранении учитываются все непомеченные аннотации валидации (`Default`) + помеченные `Persist`.
@@ -214,6 +214,7 @@ Datatables перевели на ajax (`"ajax": {"url": ajaxUrl, ..`), те пр
   - [Тесты на DB exception c @Transactional](http://stackoverflow.com/questions/37406714/548473)
   - [Сheck String in response body with mockMvc](https://stackoverflow.com/questions/18336277/548473)
 - 5: Сделать в приложении выбор локали (см. http://topjava.herokuapp.com/)
+  - [Internationalization](https://terasolunaorg.github.io/guideline/5.0.x/en/ArchitectureInDetail/Internationalization.html)
   -  <a href="http://www.mkyong.com/spring-mvc/spring-mvc-internationalization-example">Spring MVC internationalization sample</a>
   -  <a href="https://www.concretepage.com/spring-4/spring-mvc-internationalization-localization">Spring 4 MVC Internationalization</a>
 - 6: Починить UTF-8 в редактировании профиля и регистрации (если кодировка по умолчанию у вас не UTF-8). Подумайте, почему кодировка поломалась.

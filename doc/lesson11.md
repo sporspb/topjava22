@@ -7,8 +7,8 @@
 ### ![correction](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Правки в проекте
 
 #### Apply 11_0_fix.patch
-> - Поменял `@Deprecated HandlerInterceptorAdapter`
-> - Починил jQuery конвертор для `ErrorInfo`, у которого нет `dateTime` 
+> - Обнулил отображение хэша пароля в профиле
+> - В `login.jsp` код приходит параметром. Если такого не существует, вместо эксепшена выводим по умолчанию "". 
 
 ## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Разбор домашнего задания HW10
 
@@ -48,7 +48,7 @@
 > Для UI мы в профиль добавили скрытый `id`, для REST проблема осталась.
 > Для проверки сообщений в тестах в `ExceptionInfoHandler#bindValidationError` сделал `messageSourceAccessor::getMessage` и из сообщений ошибок ушли поля. Починим в патче `11_08_i18n`
 
-#### Apply 11_06_HW10_binder_validation_fix.patch
+#### Apply 11_06_HW10_manual_binder_validation.patch
 - Для этих случаев я сделал тесты - можете проверить, что без правок они не пройдут.
 - Правки заключаются в том, что я для REST update случаев убрал `@Valid` и делаю валидацию вручную в `AbstractUserController.validateBeforeUpdate`.
 - При этом добавил в spring конфигурацию [стандартный валидатор по умолчанию](https://stackoverflow.com/a/23615478/548473)
@@ -71,41 +71,29 @@
  - В выводе AJAX ошибки вывожу `errorInfo.typeMessage`
  - [Увеличил ширину высплывающего noty](https://stackoverflow.com/a/53855189/548473) 
  
-### Защита от XSS (Cross Site Scripting)
-> **Попробуйте до и после патча ввести в любое текстовое поле редактирования `<script>alert('XSS')</script>` и сохранить.**
-#### Apply 11_09_XSS.patch
-> - `password` проверять не надо, т.к. он не выводится в html, а [email надо](https://stackoverflow.com/questions/17480809)
-> - Сделал общий интерфейс валидации `View.Web` и `@Validated(View.Web.class)` вместо `@Valid` для проверки содержимого только на входе UI/REST. При сохранении проверка на безопасный html контент не делается.
->   - [Validation groups in Spring MVC](https://blog.codeleak.pl/2014/08/validation-groups-in-spring-mvc.html) 
-
-- <a href="https://forum.antichat.ru/threads/20140/">XSS для новичков</a>
-- <a href="https://habrahabr.ru/post/66057/">XSS глазами злоумышленника</a>
-- [Prevent people from doing XSS in Spring MVC. **По поводу `@SafeHtml @Depricate` см. UPDATE поста**](http://stackoverflow.com/a/40644276/548473)
-  - Замену `@SafeHtml` ищу, как вариант [Sanitizing User Input](https://thoughtfulsoftware.wordpress.com/2013/05/26/sanitizing-user-input-part-ii-validation-with-spring-rest/)
-
 ### [Обработка ошибок 404 (NotFound)](https://stackoverflow.com/questions/18322279/spring-mvc-spring-security-and-error-handling)
-#### Apply 11_10_404.patch
+#### Apply 11_09_404.patch
 
 ### Доступ к AuthorizedUser
-#### Apply 11_11_auth_user.patch
+#### Apply 11_10_auth_user.patch
 - [Автоподстановка в контроллерах](https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#mvc-authentication-principal)
   - не стал делать автоподстановку по всем контроллерам (в абстрактных контроллерах проще работать с `SecurityUtil`, чем получать его через `@AuthenticationPrincipal` и передавать параметром)
 - [В JSP: the authentication Tag](https://docs.spring.io/spring-security/site/docs/current/reference/html/taglibs.html#the-authentication-tag)
   - авторизованный пользователь доступен в JSP через tag `authentication`, интерсептор становится не нужным
+  
+### Вынес статус ошибки в параметры `ErrorType.status`
+- Возвращение статуса идет через `ResponseEntity<ErrorInfo>` и `ModelAndView.setStatus`
+#### Apply 11_11_error_status.patch
 
 ### Swagger2
 #### Apply 11_12_swagger2.patch
 - [Setting Up Swagger 2 with a Spring REST API](https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api)
 - [Swagger 2 Configuration With Spring (XML)](https://medium.com/@andreymamontov/swagger-2-configuration-with-spring-xml-3cd643a12425)
 - [Hiding Endpoints From Swagger Documentation](https://www.baeldung.com/spring-swagger-hiding-endpoints)
-> В версиях выше 2.10 и 3.0 появились проблемы с маппингом. Поэтому 3.0 буду прикручивать уже на [Spring Boot курсе](https://javaops.ru/view/bootjava)
-
-### Вынес статус ошибки в параметры `ErrorType.status`
-- Возвращение статуса идет через `ResponseEntity<ErrorInfo>` и `ModelAndView.setStatus`
-#### Apply 11_13_error_status.patch
+> В версиях выше 2.10 и 3.0 появились проблемы с маппингом. Вариант документации c OpenAPI 3.0 смотрите в [Spring Boot курсе](https://javaops.ru/view/bootjava)
 
 ### Ограничение модификации пользователей
-#### Apply 11_14_restrict_modification.patch
+#### Apply 11_13_restrict_modification.patch
  - В `UserService` добавил защиту от изменения `Admin/User` для профиля `HEROKU` (в `UserService` заинжектил `Environment` и сделал проверку на наличие профиля `HEROKU`)
  - В выпускном проекте (если только не выставляете в облако для показа) это НЕ требуется.   
  - Чтобы тесты были рабочими, ввел профиль `HEROKU`, работающий так же, как и `POSTGRES`.
@@ -114,8 +102,7 @@
 > Для тестирования с профилем heroku добавьте в VM options: `-Dspring.profiles.active="datajpa,heroku"`
 
 ###  ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png)  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFZkpVM19QWFBOQ2c">3. Деплой приложения в Heroku.</a>
-#### Apply 11_15_heroku.patch
-#### Apply 11_16_small_fix.patch
+#### Apply 11_14_heroku.patch
 
 `hr.bat` запускает внутри 2 процесса - maven (`mvn` и `java`). Проверьте из консоли, что они будут работать (прописаны в системную переменную `Path`). Если запускаетесь из под IDEA и меняете `Path`, не забывайте перегрузиться.
 ```
@@ -169,12 +156,35 @@ Datasources advanced
 ###  ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png)  <a href="https://drive.google.com/open?id=1QtHfavgIeLEnKA2Yt58XzKOouiLhg6qX">Разбор типовых собеседований (необработанный вебинар)</a>
 ###  ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png)  <a href="http://javaops.ru/view/resources/fromStudyToJob">Вебинар выпускников</a>
 
+### Защита от XSS (Cross Site Scripting)
+> **Попробуйте ввести в любое текстовое поле редактирования `<script>alert('XSS')</script>` и сохранить.**
+
+- <a href="https://forum.antichat.ru/threads/20140/">XSS для новичков</a>
+- <a href="https://habrahabr.ru/post/66057/">XSS глазами злоумышленника</a>
+
+#### Опциональное Домашнее Задание: реализовать защиту XSS.
+
+> - `password` проверять не надо, т.к. он не выводится в html, а [email надо](https://stackoverflow.com/questions/17480809)
+> - Сделать общий интерфейс валидации `View.Web` и `@Validated(View.Web.class)` вместо `@Valid` для проверки содержимого только на входе UI/REST. При сохранении в базу проверка на безопасный html контент не делается.
+>   - [Validation groups in Spring MVC](https://blog.codeleak.pl/2014/08/validation-groups-in-spring-mvc.html)
+
+ [`@SafeHtml` удалили из hibernate validator](https://hibernate.org/validator/releases/), нужно делать самим. Как вариант [Sanitizing User Input](https://thoughtfulsoftware.wordpress.com/2013/05/26/sanitizing-user-input-part-ii-validation-with-spring-rest/) или [jsoup - Sanitize HTML](https://www.tutorialspoint.com/jsoup/jsoup_sanitize_html.htm)
+
 -----------------------
 
-## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png)  Домашнее задание по проекту:
+## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png)  Основное Домашнее Задание:
 ### **Задеплоить свое приложение в Heroku** 
    - [Маленькие хитрости с Heroku - активность 24/7](https://javarush.ru/groups/posts/1987-malenjhkie-khitrosti-s-heroku)
-    
+   
+### **Пройдите основы Spring Boot по курсу [BootJava](https://javaops.ru/view/bootjava)**
+- **Занятие по миграция на BootJava будет на следующей неделе, может получится раньше следующего четверга**
+
+### **[Выполнить выпускной проект](https://github.com/JavaWebinar/topjava/blob/doc/doc/graduation.md)**
+   - Сроки сдачи указан в выпускном.
+   - Если есть проверка или Диплом, после выполнения выпускного [заполни форму проверки](https://docs.google.com/forms/d/1G8cSGBfXIy9bNECo6L-tkxWQYWeVhfzR7te4b-Jwn-Q) 
+   - Если проверки или Диплома нет, заполнять не нужно. 
+   -  **Возможно доплатить за ревью отдельно из JavaOPs профиля, как за тестовое собеседование: 2450р**
+
 ### **Сделать / обновить резюме (отдать на ревью в канал #hw11 группы slack)**
 - **Вставь ссылку на свой сертификат [из личного профиля](http://javaops.ru/auth/profile#finished), немного досрочно:)**
    - [Загрузка сайта на GitHub. Бесплатный хостинг и домен.](https://vk.com/video-58538268_456239051?list=661b165047264e7952)
@@ -192,7 +202,7 @@ Datasources advanced
    - **Добавьте в резюме ссылки на свои проекты в `GitHub` и на задеплоенные в `Heroku`. Не забудьте про выпускной!**.
    - Диплом РФ от Виакадемии о [профессиональной переподготовке](https://ru.wikipedia.org/wiki/Профессиональная_переподготовка) приравнивается ко второму высшему образованию.  В резюме, полагаю, можно указать в высшем образовании
    - Заполнить в [своем профиле Java Online Projects](http://javaops.ru/auth/profileER) ссылку на резюме и информацию по поиску работы (если конечно актуально): резюме, флаги рассматриваю работу, готов к релокации и информация для HR.
-   - **Рассылку обновления базы соискателей по HR буду рассылать  28.12, постарайтесь успеть**
+   - **Рассылку обновления базы соискателей по HR буду рассылать после 20.05, можно не спешить**
    - По [стажировка с последующим трудоустройством в Москве/ Санкт-Петербурге](http://javaops.ru/view/topjava#internship) детали будут в январе 2021.
 
 ### **После ревью резюме - опубликовать на ресурсах IT вакансий**
@@ -201,16 +211,6 @@ Datasources advanced
 ### **Получить первое открытое занятие МНОГОПОТОЧНОСТЬ и пройти эту важную тему в [проекте Masterjava](http://javaops.ru/view/masterjava)**
    - Обучение на MasterJava идет в индивидуальном режиме без проверки ДЗ: старт в любой момент, время прохождение ничем не ограничено
    - Проект, патчи, группа Slack, занятия и видео, разбор ДЗ анологичны проекту Topjava. 
-   - **СЕГОДНЯ последний день акции на MasetrJava**
-
-### **Пройдите основы Spring Boot по курсу [BootJava](https://javaops.ru/view/bootjava)**
-- **Занятие по миграция на BootJava будет 24.12**
-
-### **[Выполнить выпускной проект](https://github.com/JavaWebinar/topjava/blob/doc/doc/graduation.md)**
-   - Сроки сдачи указан в выпускном: 10.01.2021 (участникам MasterJava - 10.04.2021)
-   - Если есть проверка или Диплом, после выполнения выпускного [заполни форму проверки](https://docs.google.com/forms/d/1G8cSGBfXIy9bNECo6L-tkxWQYWeVhfzR7te4b-Jwn-Q) 
-   - Если проверки или Диплома нет, заполнять не нужно. 
-   -  **Возможно доплатить за ревью отдельно из JavaOPs профиля, как за тестовое собеседование: 2450р**
 
 -------------------------
 

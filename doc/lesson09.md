@@ -8,11 +8,13 @@
 ### ![correction](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Правки в проекте
 
 #### Apply 9_0_fix.patch
-> Небольшие упрощения в контроллерах
+- Старый стандарт HTML, HTML4, требовал наличия этого атрибута в теге <script>. Обычно он имел значение type="text/javascript". На текущий момент этого больше не требуется. Более того, в современном стандарте HTML смысл этого атрибута полностью изменился, теперь он может использоваться для JavaScript-модулей.
+[Тег «script»](https://learn.javascript.ru/hello-world)
+- Обновил заголовок `pom.xml` 
 
 ## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Разбор домашнего задания HW8
 
-### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 1. [HW8 + Optional 3,4](https://drive.google.com/file/d/1ZxmXrhz3K4V-mLkOOrH-JVtl5x0KSpIj)
+### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 1. [HW8 + Optional 2,3](https://drive.google.com/file/d/1ZxmXrhz3K4V-mLkOOrH-JVtl5x0KSpIj)
 
 #### Apply 9_01_HW8.patch
 - [Grid system](https://getbootstrap.com/docs/4.1/layout/grid/)
@@ -26,27 +28,29 @@
 
 #### Apply 9_02_HW8_clear_filter.patch
 
-###  ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2. [HW8 Optional: enable/disable + getWithMeals](https://drive.google.com/file/d/1C87GbOegXXQ46B9lFC3ytazGSlYdJGbE)
+###  ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 2. [HW8 Optional: enable/disable](https://drive.google.com/file/d/1-2ekRtwd60Cbqq4LPEQ_MOsqWcR7d04a)
 
 #### Apply 9_03_HW8_enable_disable.patch
-#### Apply 9_04_HW8_with_meals.patch
-#### Apply 9_05_HW8_test_with_meals.patch
+
+Примечание: [в публичном API выполнять PATH с параметрами нельзя](https://stackoverflow.com/questions/64390768/can-i-use-query-parameters-with-http-patch-method).
+But in a situation where your API is only used by front ends that you control (for example, only called via your java script client downloaded from your web servers), and if you don't need to use any intermediate components (like a web cache) in the middle, then you might get away with it (данные у нас не кешируются).  
+Предлагайте красивые решения.
 
 ## Занятие 9:
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFYlRkc2NGRGVydk0">Spring Binding</a>
-#### Apply 9_06_binding.patch
+#### Apply 9_04_binding.patch
 
 >  Перенес `ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY` в `ru.javawebinar.topjava.util.UserUtil`
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 4.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFd2ZvcS1pSjdMQlU">Реализация update</a>
-#### Apply 9_07_update.patch
+#### Apply 9_05_update.patch
 > - Сделал интерфейс `HasId` от которого наследуются `BaseTo` и `AbstractBaseEntity`
 > - Сделал проверку `id` в `ValidationUtil` на основе `HasId`
 > - Сделал в `ProfileRestController` обновление своего профиля через `UserTo` (нельзя изменять себе роли) и поправил тест
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 5.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFLXp5MTFDMEY5WFE">Spring Validation</a>
-#### Apply 9_08_validation.patch
+#### Apply 9_06_validation.patch
 > - `responseJSON` не выводится в случае его отсутствия (например при попытке добавить пользователя с дублирующимся email)
 
 -  <a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#validation-beanvalidation">Spring Validation.</a>
@@ -57,7 +61,7 @@
 - [Java Bean Validation Basics](https://www.baeldung.com/javax-validation)
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 6.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFcW1qeTVFdS1BdHM">Перевод DataTables на Ajax</a>
-#### Apply 9_09_datatable_via_ajax.patch
+#### Apply 9_07_datatable_via_ajax.patch
 > - Перешли на [параметры Datatables в формате 1.10](https://datatables.net/upgrade/1.10-convert)
 > - В `makeEditable()` больше нет манипуляций c DOM, которые требуются делать ПОСЛЕ отработки плагина `datatable`, поэтому нам не обязательно вызывать ее в коллбэке `initComplete`.   
 
@@ -66,9 +70,9 @@
 #### ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Вопрос:
 > Что за дополнительный параметр (который каждый раз инкрементируется) появляется при запросе datatables данных по ajax (например `http://localhost:8080/topjava/ajax/admin/users/?_=1496156621129`) ?
 
-Это защита `datatables` от кэширования запроса браузером (например в IE).
+Это защита `datatables` от кэширования запроса браузером. При изменении js, css и других статический ресурсов, также полезно добавлять в запрос версию, чтобы данные не брались из кэша (особенно когда приложение уже вышло в продакшен). 
 
-#### Apply 9_10_js_i18n.patch
+#### Apply 9_08_js_i18n.patch
 > - Добавил [простую интернационализацию в JavaScript](https://stackoverflow.com/questions/6218970/resolving-springmessages-in-javascript-for-i18n-internationalization). 
 >   - на стороне сервера формируется `i18n` JavaScript массив с значениями, который затем используется для интернационализации в браузере
 >   - в модальном окне заголовок подменяется через `$('#modalTitle').html(..title)`
@@ -80,7 +84,7 @@
 - <a href="http://stackoverflow.com/a/6242840/548473">JavaScript internationalization</a>
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 7.  <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFUmhUTms1WnhTeHc">Форма логина / логаут.</a>
-#### Apply 9_11_min_form_login.patch
+#### Apply 9_09_min_form_login.patch
 
 > Добавил функциональность logout
 
@@ -94,7 +98,7 @@
 
 > Подсказка: поглядите вкладку Network в браузере.
  
-#### Apply 9_12_jsp_form_login.patch
+#### Apply 9_10_jsp_form_login.patch
 > Рефакторинг
 > - В `login.jsp` вместо атрибутов достаю параметры запроса (`param.error/message`).
 > - Сделал i18n описания приложения
@@ -103,7 +107,7 @@
 -  <a href="https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#ns-form-and-basic">Собственный form-login</a>
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 8. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFYTA4aVN4bWxzbEU">Реализация собственного провайдера авторизации.</a>
-#### Apply 9_13_auth_via_user_service.patch
+#### Apply 9_11_auth_via_user_service.patch
 > В `UserService` добавил `@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)`, т.к. без этой аннотации для кэширования создается прокси над интерфейсом `UserDetailsService` (см. следующее видео по типам проксирования Spring). Можете проверить, что без этой аннотации приложение не поднимется. 
 > `GrantedAuthority` это "разрешение" или "право". Если оно дается на основе роли, в Spring Security принято использовать префикс `ROLE_`. При этом сама роль не должна иметь префикс.
 >  - [Role and GrantedAuthority](https://stackoverflow.com/a/19542316/548473)
@@ -119,7 +123,7 @@
 -  [Основы работы с Spring Security от Eugene Suleimanov](https://www.youtube.com/watch?v=7uxROJ1nduk)
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 10. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFU3hMR0o4eGNoUmc">Spring Security Test</a>
-#### Apply 9_14_spring_security_test.patch
+#### Apply 9_12_spring_security_test.patch
 
 > - Cделал "честную" авторизацию в `RootControllerTest` (через `authentication` в утильном методе `TestUtil`)
 > - Cделал `mockAuthorize` для `SpringMain`, в который не попадают фильтры
@@ -140,7 +144,7 @@
 
 >  В куки попадает обычная строка JSESSIONID. Куда сериализуется объект User?
 
-Для хранения состояния сессии (например корзины покупателя) в Servlet API есть механизм хранения объектов сессии (грубо - мультимапмапа, которая достается из хранилища по ключу). При создании сессии на стороне сервера (через `request.getSession`) создается кука `JSESSIONID`, которая передается между клиентом и сервером и является ключом в хранилище объектов сессий. См. <a href="http://javatutor.net/books/tiej/servlets#_Toc39472970">обработка сессий с помощью сервлетов</a>
+Для хранения состояния сессии (например корзины покупателя) в Servlet API есть механизм хранения объектов сессии (грубо - мультимапмапа, которая достается из хранилища по ключу). При создании сессии на стороне сервера (через `request.getSession`) создается кука `JSESSIONID`, которая передается между клиентом и сервером в каждом запросе и является ключом в хранилище объектов сессий. См. <a href="http://javatutor.net/books/tiej/servlets#_Toc39472970">обработка сессий с помощью сервлетов</a>
 
 > В `login.jsp` есть форма `<form:form action="spring_security_check" ..>` Где такой url используется?
 
@@ -166,9 +170,9 @@
   - [jQuery: конверторы](https://jquery-docs.ru/jQuery.ajax/#using-converters)
 
 - Попробуйте при запросах по REST оставить стандартный ISO формат (с разделителем `T`). То есть:
-   - Отображение и редактирование еды на UI происходит без `T` (формат значений на UI можно увидеть во вкладке браузера Network)
-   - Когда мы работаем по REST, в json и запросах формат даты ISO (с разделителем `T`)
-   - Напомню, что параметры методов контроллера (в том числе собранные в объекты через Binding) парсятся конверторами спринга (`@DateTimeFormat`), а объекты json парсится Jackson и они никак не влияют друг на друга.
+  - Отображение и редактирование еды на UI происходит без `T` (формат значений на UI можно увидеть во вкладке браузера Network)
+  - Когда мы работаем по REST, в json и запросах формат даты ISO (с разделителем `T`)
+  - Напомню, что параметры методов контроллера (в том числе собранные в объекты через Binding) парсятся конверторами спринга (`@DateTimeFormat`), а объекты json парсится Jackson и они никак не влияют друг на друга.
 
 ## ![error](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Проверка в HW09
 - 1: Проверьте, что при добавлении и редактировании пользователя и еды у вас корректно отображаются заголовки модального окна:
@@ -185,3 +189,4 @@ i18n['${key}'] = ...
 - 6: Не дублируйте обработку ошибок в `BindingResult` в ajax контроллерах
 - 7: Проверьте редактирование еды: открыть на редактирование и сохранить не должно приводить к ошибкам с форматом времени.
 - 8: Проверьте в `RootController.meals()`, его нужно тоже поправить
+- 9: При решении с jQuery конвертором: он создает поле `responseJSON`, если внутри не вылетает по эксепшену. См. также [hasOwnProperty()](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwnProperty)  

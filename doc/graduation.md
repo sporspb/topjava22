@@ -1,10 +1,10 @@
 ## Выпускной проект Topjava
 
 - Ревью проекта входит в участие с проверкой домашних заданий. Проверяется **два** раза: один раз ассистентами и после ваших правок - финальная проверка, Кислиным Григорием. Ревью выпускного делается только у участников с проверкой ДЗ. У кого оплачен Диплом, но нет проверки - даю краткие итоги. 
-- Отдать выпускной на ревью нужно до 10.01.2021. Участникам проекта [Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA) (Masterjava)](http://javaops.ru/reg/masterjava) срок до 10.04.2021.
+- Отдать выпускной на ревью нужно до 16.05. Участникам проекта [Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). Удаленное взаимодействие (JMS/AKKA) (Masterjava)](http://javaops.ru/reg/masterjava) срок до 16.08.2021.
 - **Ревью выпускного можно оплатить отдельно как [техническое собеседование](https://javaops.ru/auth/payonline?payId=I)**
 - **[После выполнения выпускного заполните форму](https://docs.google.com/forms/d/1G8cSGBfXIy9bNECo6L-tkxWQYWeVhfzR7te4b-Jwn-Q)**
-- Заключившим образовательный договор: **для получение диплома требуется сдача выпускного проекта (либо любого другого, даже рабочего, на нашем стеке)**. В случае, если Вы его не успеете его сделать, **оформляется академический отпуск**. 
+- Заключившим образовательный договор: **для получение диплома требуется сдача выпускного проекта (либо любого другого, даже рабочего, на нашем стеке)**. В случае, если Вы его не успеете его сделать, **заранее оформляется академический отпуск**. 
 
 ----
 Design and implement a REST API using Hibernate/Spring/SpringMVC (or Spring-Boot) **without frontend**.
@@ -19,8 +19,8 @@ Build a voting system for deciding where to have lunch.
  * Users can vote on which restaurant they want to have lunch at
  * Only one vote counted per user
  * If user votes again the same day:
-    - If it is before 11:00 we assume that he changed his mind.
-    - If it is after 11:00 then it is too late, vote can't be changed
+   - If it is before 11:00 we assume that he changed his mind.
+   - If it is after 11:00 then it is too late, vote can't be changed
 
 Each restaurant provides a new menu each day.
 
@@ -63,6 +63,7 @@ _Антуан де Сент-Экзюпери_
     - **[15 тривиальных фактов о правильной работе с протоколом HTTP](https://habrahabr.ru/company/yandex/blog/265569/)**
     - **<a href="https://medium.com/@mwaysolutions/10-best-practices-for-better-restful-api-cbe81b06f291">10 Best Practices for Better RESTful API</a>**
     - [REST resource hierarchy](https://stackoverflow.com/questions/20951419/what-are-best-practices-for-rest-nested-resources)
+    - [Лучшие практики разработки REST API: правила 1-7,15-17](https://tproger.ru/translations/luchshie-praktiki-razrabotki-rest-api-20-sovetov/)
 - 10: не смешивайте TO и Entity вместе. Лучше всего, если они будут независимыми друг от друга.
 - 11: не размещайте логику приложения и преобразования в TO в слое доступа к DB
 - 12: если приложению в объекте требуется только его id, используйте reference (как мы при сохранении еды вставляем туда юзера)

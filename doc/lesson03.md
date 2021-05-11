@@ -4,9 +4,8 @@
 > **ВНИМАНИЕ! При удалении класса из исходников, его скомпилированная версия все еще будет находиться в target (и classpath). В этом случае (или в любом другом, когда проект начинает глючить) сделайте `mvn clean`.**
 ### ![correction](https://cloud.githubusercontent.com/assets/13649199/13672935/ef09ec1e-e6e7-11e5-9f79-d1641c05cbe6.png) Правки в проекте
 
-#### Apply 3_0_refactoring.patch
-- Вместо `init(ServletConfig config)` в инициализации сервлета переопределяю специальный метод `init()`. Зайдите в переопределенный метод `GenericServlet` (по стрелке вверх) и прочтите javadoc.  
-- Поправил комментарии в `MealRepository`, который будет рефакториться.
+#### Apply 3_0_fix.patch
+- Fix grammar
 
 ## ![hw](https://cloud.githubusercontent.com/assets/13649199/13672719/09593080-e6e7-11e5-81d1-5cb629c438ca.png) Разбор домашнего задания HW02
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 1. [Реализация репозиториев](https://drive.google.com/file/d/1hZay5jV-mVEByMnDveZ36jUAY0I3WChT)
@@ -18,6 +17,8 @@
 Используем `LocalDateTime` вместо `LocalDate` с прицелом на то, что в DB тип даты - `timestamp`.
 
 #### Apply 3_02_HW2_repo_filters.patch
+ - Бага в `usersMealsMap.computeIfAbsent(userId, ConcurrentHashMap::new)` - создается  `new ConcurrentHashMap(userId)`, что неверно. В патче `3_04_refactor_repository` этот код рефакторится, поэтому просто примите к сведению и не делайте так!
+Проверьте себя, что знаете как исправить (чекинить правку не надо, чтобы не было конфликтов)
  - [Spring `@Nullable` аннотации](https://www.jetbrains.com/help/idea/nullable-and-notnull-annotations.html)
  
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 3. [Meals Layers](https://drive.google.com/file/d/1jwd4Yhdy434fUAQyjpsZOO24XT-4lfp8)
@@ -38,6 +39,7 @@
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 4. [HW2 Optional](https://drive.google.com/file/d/1yzNvGBgjgtuKXDFo983OqtTNoHDbyn1z)
 #### Apply 3_05_HW2_optional_MealServlet.patch
+> - Заменил `@Depricated StringUtils.isEmpty` на `hasLength` (условие приходится инвертировать). **ВНИМАНИЕ: [обновленный патч от 18.02 в 11.23](https://drive.google.com/file/d/10he49sS_2B1yRmPl3qeIcbVUQ3N58-YI)**
 > - Убрал логирование (уже есть в контроллере)
 > - `assureIdConsistent` позволяет в контроллере обновлять еду с `id=null`
 
@@ -79,16 +81,18 @@
 - [Регрессионное тестирование](https://ru.wikipedia.org/wiki/Регрессионное_тестирование)
 - [Разработка через тестирование](https://ru.wikipedia.org/wiki/Разработка_через_тестирование)
 - [Тестирование Java кода с помощью JUnit](http://www.javenue.info/post/19)
-- [maven-surefire-plugin](https://www.apache-maven.ru/plugins/maven-surefire-plugin.html)
+- [maven-surefire-plugin](https://maven.apache.org/surefire/maven-surefire-plugin/usage.html)
 - Дополнительно:
   - [JUnit 4](http://junit.org/junit4)
   - [Тестирование в Java. JUnit](http://habrahabr.ru/post/120101/)
-  - [Junit — Что почитать по jUnit-тестам](https://i-http.ru/junit-chto-pochitat-po-junit-testam/)
+  - [Юнит-тестирование для чайников](https://habr.com/ru/post/169381/)
   - [Тестирование кода Java с помощью фреймворка JUnit](https://www.youtube.com/watch?v=z9jEVLCF5_w) (youtube)
 
 #### Apply 3_09_add_junit.patch
-### После патча сделайте `clean` и [обновите зависимости Maven](https://github.com/JavaOPs/topjava/wiki/IDEA#Обновить-зависимости-в-maven-проекте), чтобы IDEA определила сорсы тестов
+### После патча сделайте `clean` и [обновите зависимости Maven](https://github.com/JavaOPs/topjava/wiki/IDEA#maven_update), чтобы IDEA определила сорсы тестов
 #### ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Вопрос: почему проект упадет при попытке открыть страничку еды (в логе смотреть самый верх самого нижнего исключения)?
+- В `InMemoryUserRepository` при инициализации репозиториев никак не учитывается/сбрасывается счетчик. Тк у нас все тесты будут с базой данных, это прошло незамеченным много потоков.
+Предлагайте свои решения [в обсуждении](https://topjava22.slack.com/archives/C01ND5ZEH61/p1613650411020800?thread_ts=1613650344.020700&cid=C01ND5ZEH61) 
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 7. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFai1veG9qaFZlZ2s">Spring Test</a>
 > - поменял `@RunWith`: `SpringRunner` is an alias for the `SpringJUnit4ClassRunner`
@@ -96,11 +100,13 @@
 -  [Spring Testing](https://docs.spring.io/spring/docs/current/spring-framework-reference/testing.html)
 
 ### ![video](https://cloud.githubusercontent.com/assets/13649199/13672715/06dbc6ce-e6e7-11e5-81a9-04fbddb9e488.png) 8. <a href="https://drive.google.com/open?id=0B9Ye2auQ_NsFVlNYczhnSU9JdXc">Базы данных. Обзор NoSQL и Java persistence solution без ORM.</a>
-> **Внимание! С PostgreSQL 12 возможны проблемы**
+> **Рекомендуется PostgreSQL 13**
 -  <a href="https://ru.wikipedia.org/wiki/PostgreSQL">PostgreSQL</a>.
 -  [PostgreSQL JDBC Driver](https://github.com/pgjdbc/pgjdbc)
 -  <a href="http://java-course.ru/begin/postgresql/">Установка PostgreSQL</a>.
--  Чтобы избежать проблем с правами и именами каталогов, [**рекомендуют установить postgres в простой каталог, например `C:\Postgresql`**. И при проблемах создать каталог data на другом диске](https://stackoverflow.com/questions/43432713/548473). Если Unix, [проверить права доступа к папке (0700)](http://www.sql.ru/forum/765555/permissions-should-be-u-rwx-0700).
+-  Чтобы избежать проблем с правами и именами каталогов, [**рекомендуют установить postgres в простой каталог, например `C:\Postgresql`**. И при проблемах создать каталог data на другом диске](https://stackoverflow.com/questions/43432713/548473). Если Unix, [проверить права доступа к папке (0700)](http://www.sql.ru/forum/765555/permissions-should-be-u-rwx-0700). Название ПК и имя пользователя должны быть латиницей (или можно устанавливать сервер [отсюда](https://postgrespro.ru/windows))
+    - [Установка PostgreSQL в UBUNTU](https://losst.ru/ustanovka-postgresql-ubuntu-16-04)
+    - [Install PostgreSQL 13 on Fedora](https://computingforgeeks.com/install-postgresql-13-on-fedora/)
     
 > Создать в pgAdmin новую базу `topjava` и новую роль `user`, пароль `password`
 
@@ -187,6 +193,9 @@ GRANT ALL PRIVILEGES ON DATABASE topjava TO "user";
 
 #### Apply 3_15_fix_servlet.patch
 **Приложение перестало работать, тк. для репозитория мы используем заглушку `JdbcMealRepository`**
+
+#### Apply [3_16_fix_junit.patch](https://drive.google.com/file/d/15FGxDjfiuwdkjc7miOibnB7570mUr9-i)
+> При выполнении функционала `create/update` объекты могут измениться, и мы не можем считать их эталонными. Поэтому при сравнении мы создаем эталон еще раз.
  
 ## ![question](https://cloud.githubusercontent.com/assets/13649199/13672858/9cd58692-e6e7-11e5-905d-c295d2a456f1.png) Ваши вопросы
 > Что такое REST?
@@ -307,7 +316,8 @@ UNIQUE индекс нужен для обеспечения уникально�
 - 5: В реализации `JdbcMealRepository` одним SQL запросом используйте возвращаемое `update` значение `the number of rows affected`
 - 6: При тестировании не портите эталонные тестовые объекты из `MealTestData`
 - 7: Проверьте, что все, что относится к тестам, находится в каталоге `test` (не попадает в сборку проекта)
-- 8: **Еще раз: в тестах проверять через `JUnit Assert` или использовать `assertThat().isEqualTo` нельзя: сравнение будет происходить через `AbstractBaseEntity.equals`, который сравнивает объекты только по `id`. Мы не можем переопределять `equals` для объектов модели, тк будем использовать JPA (см. [The JPA hashCode() / equals() dilemma](https://stackoverflow.com/questions/5031614/548473))**
+- 8: **Еще раз: в тестах нельзя сравнивать объекты через `JUnit Assert` и `assertThat().isEqualTo` - сравнение будет происходить через `AbstractBaseEntity.equals`, который сравнивает объекты только по `id`. Мы не можем переопределять `equals` для объектов модели, тк будем использовать JPA (см. [The JPA hashCode() / equals() dilemma](https://stackoverflow.com/questions/5031614/548473))**
 - 9: НЕ делайте склейку SQL запросов вручную из параметров, только через `jdbcTemplate` параметры! См. [Внедрение_SQL-кода](https://ru.wikipedia.org/wiki/Внедрение_SQL-кода)
 - 10: Напомню: `BeanPropertyRowMapper` работает через отражение. Ему нужны геттеры/сеттеры и имена полей должны "совпадать" с колонками `ResultSet` (Column values are mapped based on matching the column name as obtained from result set metadata to public setters for the corresponding properties. The names are matched either directly or by transforming a name separating the parts with underscores to the same name using "camel" case).
 - 11: Для разделения тестов InMemory и Jdbc можно использовать разные Spring context. В том числе переопределять контест для тестов в `src\test\resources`
+- 12: Обязательно протестируйте в `MealServiceTest` нормальное поведение методов (по аналогии с `UserServiceTest`)
